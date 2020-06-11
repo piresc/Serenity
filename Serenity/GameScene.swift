@@ -15,31 +15,35 @@ class GameScene: SKScene {
      var coral = SKSpriteNode()
      var coral2 = SKSpriteNode()
      var scoreLabel = SKLabelNode()
+     var char = SKSpriteNode()
     var score = 0 {
         didSet{
             scoreLabel.text = "\(score) M"
         }
     }
-    var Char: SKSpriteNode!
-    var UpBtn: SKSpriteNode!
+    var charPosition: CGFloat = 0
+    var breath = 0
+    var health = 0
     
     override func didMove(to view: SKView) {
-        
         self.anchorPoint = CGPoint(x: 0.5, y: 0.5)
-        createGrounds()
-        scoreLabel.text = "\(score) M"
-        scoreLabel.fontColor = SKColor.black
-        scoreLabel.horizontalAlignmentMode = .right
-        scoreLabel.position = CGPoint(x: 150, y: 285)
-        scoreLabel.zPosition = 5
-        addChild(scoreLabel)
+        breath = 5400
+        health = 3
+        makeChar()
+        createBackground()
+        makeScore()
+        makeBubble()
+        
     }
     
     override func update(_ currentTime: CFTimeInterval){
-        moveGrounds()
+        moveBackground()
+        moveChar()
         score += 1
+        updateBubble()
+        print (breath)
     }
-    func createGrounds(){
+    func createBackground(){
         for i in 0...3{
             let ground = SKSpriteNode(imageNamed: "Ground")
             ground.name = "Ground"
@@ -75,7 +79,7 @@ class GameScene: SKScene {
             self.addChild(coral2)
         }
     }
-    func moveGrounds(){
+    func moveBackground(){
         self.enumerateChildNodes(withName: "Ground", using: ({
             (node, error) in
             node.position.x -= 2
@@ -104,5 +108,93 @@ class GameScene: SKScene {
                 node.position.x += 750 * 3
             }
         }))
+    }
+    
+    func makeScore(){
+        scoreLabel.text = "\(score) M"
+        scoreLabel.fontColor = SKColor.black
+        scoreLabel.horizontalAlignmentMode = .right
+        scoreLabel.position = CGPoint(x: 150, y: 285)
+        scoreLabel.zPosition = 5
+        addChild(scoreLabel)
+    }
+    
+    func makeChar(){
+        char = (childNode(withName: "Char")as! SKSpriteNode)
+        char .zPosition = 5
+        charPosition = -1
+    }
+    
+    func moveChar(){
+        if char.position.y < -300{
+            char.position.y = -300
+        }
+        if char.position.y>160{
+            char.position.y = 160
+            breath = 5400
+        }
+        char.position.y = char.position.y + (charPosition*3)
+        if breath > 0{
+            breath -= 1
+        }else if breath == 0{
+            health -= 1
+        }
+    }
+    
+   func makeBubble(){
+            let bubble1 = SKSpriteNode(imageNamed: "Bubble")
+            bubble1.name = "Bubble1"
+            bubble1.size=CGSize(width: 25, height: 25)
+            bubble1.position = CGPoint(x: 30+50, y: 250)
+            bubble1.zPosition = 5
+            self.addChild(bubble1)
+            
+            let bubble2 = SKSpriteNode(imageNamed: "Bubble")
+            bubble2.name = "Bubble2"
+            bubble2.size=CGSize(width: 25, height: 25)
+            bubble2.position = CGPoint(x: 60+50, y: 250)
+            bubble2.zPosition = 5
+            self.addChild(bubble2)
+            
+            let bubble3 = SKSpriteNode(imageNamed: "Bubble")
+            bubble3.name = "Bubble3"
+            bubble3.size=CGSize(width: 25, height: 25)
+            bubble3.position = CGPoint(x: 90+50, y: 250)
+            bubble3.zPosition = 5
+            self.addChild(bubble3)
+
+}
+    
+    func updateBubble(){
+        self.enumerateChildNodes(withName: "Bubble3", using: ({
+            (node, error) in
+            node.isHidden = true
+            if self.breath > 3600 && self.breath < 5400  {
+                node.isHidden = false
+            }
+        }))
+        
+        self.enumerateChildNodes(withName: "Bubble2", using: ({
+            (node, error) in
+            node.isHidden = true
+            if self.breath > 1800 && self.breath < 5400  {
+                node.isHidden = false
+            }
+        }))
+        
+        self.enumerateChildNodes(withName: "Bubble1", using: ({
+            (node, error) in
+            node.isHidden = true
+           if self.breath > 0 && self.breath < 5400  {
+                node.isHidden = false
+            }
+        }))
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        charPosition = 1
+}
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        charPosition = -1
     }
 }
