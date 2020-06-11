@@ -24,6 +24,7 @@ class GameScene: SKScene {
     var charPosition: CGFloat = 0
     var breath = 0
     var health = 0
+    var breathTimer = 0
     
     override func didMove(to view: SKView) {
         self.anchorPoint = CGPoint(x: 0.5, y: 0.5)
@@ -33,6 +34,7 @@ class GameScene: SKScene {
         createBackground()
         makeScore()
         makeBubble()
+        makeHealth()
         
     }
     
@@ -41,7 +43,8 @@ class GameScene: SKScene {
         moveChar()
         score += 1
         updateBubble()
-        print (breath)
+        updateHealth()
+        print (health)
     }
     func createBackground(){
         for i in 0...3{
@@ -136,37 +139,34 @@ class GameScene: SKScene {
         char.position.y = char.position.y + (charPosition*3)
         if breath > 0{
             breath -= 1
-        }else if breath == 0{
-            health -= 1
         }
     }
     
    func makeBubble(){
-            let bubble1 = SKSpriteNode(imageNamed: "Bubble")
-            bubble1.name = "Bubble1"
-            bubble1.size=CGSize(width: 25, height: 25)
-            bubble1.position = CGPoint(x: 30+50, y: 250)
-            bubble1.zPosition = 5
-            self.addChild(bubble1)
+        let bubble1 = SKSpriteNode(imageNamed: "Bubble")
+        bubble1.name = "Bubble1"
+        bubble1.size=CGSize(width: 25, height: 25)
+        bubble1.position = CGPoint(x: -80, y: 255)
+        bubble1.zPosition = 5
+        self.addChild(bubble1)
             
-            let bubble2 = SKSpriteNode(imageNamed: "Bubble")
-            bubble2.name = "Bubble2"
-            bubble2.size=CGSize(width: 25, height: 25)
-            bubble2.position = CGPoint(x: 60+50, y: 250)
-            bubble2.zPosition = 5
-            self.addChild(bubble2)
+        let bubble2 = SKSpriteNode(imageNamed: "Bubble")
+        bubble2.name = "Bubble2"
+        bubble2.size=CGSize(width: 25, height: 25)
+        bubble2.position = CGPoint(x: -110, y: 255)
+        bubble2.zPosition = 5
+        self.addChild(bubble2)
             
-            let bubble3 = SKSpriteNode(imageNamed: "Bubble")
-            bubble3.name = "Bubble3"
-            bubble3.size=CGSize(width: 25, height: 25)
-            bubble3.position = CGPoint(x: 90+50, y: 250)
-            bubble3.zPosition = 5
-            self.addChild(bubble3)
-
+        let bubble3 = SKSpriteNode(imageNamed: "Bubble")
+        bubble3.name = "Bubble3"
+        bubble3.size=CGSize(width: 25, height: 25)
+        bubble3.position = CGPoint(x: -140, y: 255)
+        bubble3.zPosition = 5
+        self.addChild(bubble3)
 }
     
     func updateBubble(){
-        self.enumerateChildNodes(withName: "Bubble3", using: ({
+        self.enumerateChildNodes(withName: "Bubble1", using: ({
             (node, error) in
             node.isHidden = true
             if self.breath > 3600 && self.breath < 5400  {
@@ -182,13 +182,73 @@ class GameScene: SKScene {
             }
         }))
         
-        self.enumerateChildNodes(withName: "Bubble1", using: ({
+        self.enumerateChildNodes(withName: "Bubble3", using: ({
             (node, error) in
             node.isHidden = true
            if self.breath > 0 && self.breath < 5400  {
                 node.isHidden = false
             }
+            if self.breath == 0{
+                self.breathTimer += 1;
+            }
         }))
+    }
+       func makeHealth(){
+            let health1 = SKSpriteNode(imageNamed: "Health")
+            health1.name = "Health1"
+            health1.size=CGSize(width: 25, height: 25)
+            health1.position = CGPoint(x: -80, y: 295)
+            health1.zPosition = 5
+            health1.color = .red
+            self.addChild(health1)
+                
+            let health2 = SKSpriteNode(imageNamed: "Health")
+            health2.name = "Health2"
+            health2.size=CGSize(width: 25, height: 25)
+            health2.position = CGPoint(x: -110, y: 295)
+            health2.zPosition = 5
+            self.addChild(health2)
+                
+            let health3 = SKSpriteNode(imageNamed: "Health")
+            health3.name = "Health3"
+            health3.size=CGSize(width: 25, height: 25)
+            health3.position = CGPoint(x: -140, y: 295)
+            health3.zPosition = 5
+            self.addChild(health3)
+    }
+    func updateHealth(){
+        self.enumerateChildNodes(withName: "Health1", using: ({
+            (node, error) in
+            node.isHidden = true
+            if self.breathTimer < 1 {
+                node.isHidden = false
+            }
+        }))
+        
+        self.enumerateChildNodes(withName: "Health2", using: ({
+            (node, error) in
+            node.isHidden = true
+            if self.breathTimer < 1800 {
+                node.isHidden = false
+            }
+        }))
+        
+        self.enumerateChildNodes(withName: "Health3", using: ({
+            (node, error) in
+            node.isHidden = true
+           if self.breathTimer < 3600  {
+                node.isHidden = false
+            }
+        }))
+        if self.breathTimer > 1{
+            health = 2
+        }
+        if self.breathTimer > 1800{
+            health = 1
+        }
+        if self.breathTimer > 3600{
+            health = 0
+        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
