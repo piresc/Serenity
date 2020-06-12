@@ -27,6 +27,7 @@ class GameScene: SKScene {
             scoreLabel.text = "\(score) M"
         }
     }
+    
     var charPosition: CGFloat = 0
     var breath = 0
     var health = 0
@@ -42,19 +43,7 @@ class GameScene: SKScene {
         makeScore()
         makeBubble()
         makeHealth()
-        let coral = SKSpriteNode(imageNamed: "Coral")
-        coral.name = "Coral"
-        coral.size = CGSize(width: 150, height: 150)
-        coral.anchorPoint = CGPoint(x: 0.5, y: 0.5)
-        coral.position = CGPoint(x: 50, y: 0)
-        coral .zPosition = 5
-        let physicsBody = SKPhysicsBody(rectangleOf: coral.size)
-        physicsBody.categoryBitMask = PhysicalBodyCategory.coral
-        physicsBody.contactTestBitMask = UInt32.max
-        coral.physicsBody = physicsBody
-        coral.physicsBody?.isDynamic = false
-        coral.physicsBody?.affectedByGravity = false
-        self.addChild(coral)
+        
     }
     
     override func update(_ currentTime: CFTimeInterval){
@@ -85,9 +74,9 @@ class GameScene: SKScene {
             let coral = SKSpriteNode(imageNamed: "Coral")
             coral.name = "Coral"
             coral.size = CGSize(width: 150, height: 150)
-            coral.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+            coral.anchorPoint = CGPoint(x: 0.5, y: -0.1)
             let randCoral = CGFloat.random(in: 3000...5000)
-            coral.position = CGPoint(x:CGFloat(i) * randCoral, y: 50)
+            coral.position = CGPoint(x:CGFloat(i) * randCoral, y: -(self.frame.size.height/2))
             coral .zPosition = 5
             let physicsBody = SKPhysicsBody(rectangleOf: coral.size)
             physicsBody.categoryBitMask = PhysicalBodyCategory.coral
@@ -95,7 +84,6 @@ class GameScene: SKScene {
             coral.physicsBody = physicsBody
             coral.physicsBody?.isDynamic = false
             coral.physicsBody?.affectedByGravity = false
-            self.addChild(coral)
             
             let coral2 = SKSpriteNode(imageNamed: "Coral2")
             coral2.name = "Coral2"
@@ -104,6 +92,7 @@ class GameScene: SKScene {
             coral2.position = CGPoint(x:CGFloat(i) * randCoral+CGFloat.random(in: 150...450), y: -(self.frame.size.height/2))
             coral2.xScale = 0.7
             coral2.yScale = 0.7
+            self.addChild(coral)
             self.addChild(coral2)
         }
     }
@@ -145,11 +134,10 @@ class GameScene: SKScene {
         charPosition = -1
         let physicsBody = SKPhysicsBody(rectangleOf: char.size)
         physicsBody.categoryBitMask = PhysicalBodyCategory.char
-        physicsBody.contactTestBitMask = UInt32.max
+        physicsBody.contactTestBitMask = PhysicalBodyCategory.coral
+        physicsBody.collisionBitMask = 0
         char.physicsBody = physicsBody
-        char.physicsBody?.isDynamic = false
         char.physicsBody?.affectedByGravity = false
-
     }
     
     func moveChar(){
@@ -252,7 +240,7 @@ class GameScene: SKScene {
         self.enumerateChildNodes(withName: "Health1", using: ({
             (node, error) in
             node.isHidden = true
-            if self.breathTimer < 1 {
+            if self.health > 2 {
                 node.isHidden = false
             }
         }))
@@ -260,26 +248,26 @@ class GameScene: SKScene {
         self.enumerateChildNodes(withName: "Health2", using: ({
             (node, error) in
             node.isHidden = true
-            if self.breathTimer < 1800 {
+            if self.health > 1 {
                 node.isHidden = false
             }
         }))
-        
+    
         self.enumerateChildNodes(withName: "Health3", using: ({
             (node, error) in
             node.isHidden = true
-           if self.breathTimer < 3600  {
+           if self.health > 0  {
                 node.isHidden = false
             }
         }))
         if self.breathTimer > 1{
-            health = 2
+            health -= 1
         }
         if self.breathTimer > 1800{
-            health = 1
+            health -= 1
         }
         if self.breathTimer > 3600{
-            health = 0
+            health -= 1
         }
     }
     
@@ -296,17 +284,14 @@ extension GameScene: SKPhysicsContactDelegate {
     // (click each object and look at the right-side inspector for the
     // physics body details, then write code here to detect object collision)
     func didBegin(_ contact: SKPhysicsContact) {
-        print("test")
-        guard let nodeA = contact.bodyA.node else { return }
-        guard let nodeB = contact.bodyB.node else { return }
-        
+
         // OR bitwise helps see which two nodes hit each other, and what their categories are...
         let contactMask = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
             
         // MARK: 4. for the homework (check the first lines above)
         // if meteor hits the dino
         if contactMask == PhysicalBodyCategory.coral | PhysicalBodyCategory.char {
-                print("berhasil nabrak")
+            health -= 1
         }
     }
     
