@@ -12,7 +12,7 @@ import GameplayKit
 struct PhysicalBodyCategory{
     static let char : UInt32 = 0b1
     static let coral : UInt32 = 0b10
-    static let ground : UInt32 = 0b100
+    static let coin : UInt32 = 0b100
 }
 
 class GameScene: SKScene {
@@ -22,6 +22,8 @@ class GameScene: SKScene {
      var coral2 = SKSpriteNode()
      var scoreLabel = SKLabelNode()
      var char = SKSpriteNode()
+    var coin = SKSpriteNode()
+    let randCCoor = CGFloat.random(in: 300...750)
     var score = 0 {
         didSet{
             scoreLabel.text = "\(score) M"
@@ -32,17 +34,26 @@ class GameScene: SKScene {
     var breath = 0
     var health = 0
     var breathTimer = 0
+    var coinViewLabel = SKLabelNode()
+    var coinView = 0 {
+        didSet{
+            coinViewLabel.text = "\(coinView)"
+        }
+    }
     
     override func didMove(to view: SKView) {
         self.physicsWorld.contactDelegate = self
         self.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         breath = 5400
         health = 3
-        makeChar()
+        createChar()
         createBackground()
-        makeScore()
-        makeBubble()
-        makeHealth()
+        createCoral()
+        createScore()
+        createCoinView()
+        createBubble()
+        createHealth()
+        createCoin()
         
     }
     
@@ -71,12 +82,23 @@ class GameScene: SKScene {
             awan.position = CGPoint(x:CGFloat(i) * awan.size.width, y: -(self.frame.size.height/2))
             self.addChild(awan)
             
+            let coral2 = SKSpriteNode(imageNamed: "Coral2")
+            coral2.name = "Coral2"
+            coral2.size = CGSize(width: 150, height: 150)
+            coral2.anchorPoint = CGPoint(x: 0.5, y: 0)
+            coral2.position = CGPoint(x:CGFloat(i) * (randCCoor+CGFloat.random(in: -150...150)), y: -(self.frame.size.height/2))
+            coral2.xScale = 0.7
+            coral2.yScale = 0.7
+            self.addChild(coral2)
+        }
+    }
+    
+    func createCoral(){
             let coral = SKSpriteNode(imageNamed: "Coral")
             coral.name = "Coral"
             coral.size = CGSize(width: 150, height: 150)
             coral.anchorPoint = CGPoint(x: 0.5, y: -0.1)
-            let randCoral = CGFloat.random(in: 3000...5000)
-            coral.position = CGPoint(x:CGFloat(i) * randCoral, y: -(self.frame.size.height/2))
+            coral.position = CGPoint(x:randCCoor, y: -(self.frame.size.height/2))
             coral .zPosition = 5
             let physicsBody = SKPhysicsBody(rectangleOf: coral.size)
             physicsBody.categoryBitMask = PhysicalBodyCategory.coral
@@ -84,18 +106,41 @@ class GameScene: SKScene {
             coral.physicsBody = physicsBody
             coral.physicsBody?.isDynamic = false
             coral.physicsBody?.affectedByGravity = false
-            
-            let coral2 = SKSpriteNode(imageNamed: "Coral2")
-            coral2.name = "Coral2"
-            coral2.size = CGSize(width: 150, height: 150)
-            coral2.anchorPoint = CGPoint(x: 0.5, y: 0)
-            coral2.position = CGPoint(x:CGFloat(i) * randCoral+CGFloat.random(in: 150...450), y: -(self.frame.size.height/2))
-            coral2.xScale = 0.7
-            coral2.yScale = 0.7
             self.addChild(coral)
-            self.addChild(coral2)
-        }
     }
+    
+    func createCoin(){
+            let coin = SKSpriteNode(imageNamed: "Coin")
+            coin.name = "Coin"
+            coin.size = CGSize(width: 50, height: 50)
+            coin.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+            coin.position = CGPoint(x:randCCoor, y: CGFloat.random(in: -250...160))
+            coin.zPosition = 5
+            let physicsBody = SKPhysicsBody(circleOfRadius: coin.size.width)
+            physicsBody.categoryBitMask = PhysicalBodyCategory.coin
+            physicsBody.contactTestBitMask = PhysicalBodyCategory.char
+            coin.physicsBody = physicsBody
+            coin.physicsBody?.isDynamic = false
+            coin.physicsBody?.affectedByGravity = false
+            self.addChild(coin)
+    }
+    
+    func createCoinView(){
+        coinViewLabel.text = "\(coinView)"
+        coinViewLabel.fontColor = SKColor.black
+        coinViewLabel.horizontalAlignmentMode = .right
+        coinViewLabel.position = CGPoint(x: 120, y: 255)
+        coinViewLabel.zPosition = 5
+        addChild(coinViewLabel)
+        let coinLG = SKSpriteNode(imageNamed: "Coin")
+        coinLG.name = "CoinLG"
+        coinLG.size = CGSize(width: 25, height: 25)
+        coinLG.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+        coinLG.position = CGPoint(x: 140, y: 265)
+        coinLG.zPosition = 5
+        self.addChild(coinLG)
+    }
+    
     func moveBackground(){
         self.enumerateChildNodes(withName: "Ground", using: ({
             (node, error) in
@@ -125,9 +170,17 @@ class GameScene: SKScene {
                 node.position.x += 750 * 3
             }
         }))
+        self.enumerateChildNodes(withName: "Coin", using: ({
+            (node, error) in
+            node.position.x -= 2
+            if node.position.x < -(175) {
+                node.position.x += 175 * 3
+                node.position.y = CGFloat.random(in: -250...160)
+            }
+        }))
     }
 
-    func makeChar(){
+    func createChar(){
         char = (childNode(withName: "Char")as! SKSpriteNode)
         char.name = "Char"
         char .zPosition = 5
@@ -154,7 +207,7 @@ class GameScene: SKScene {
         }
     }
 
-    func makeScore(){
+    func createScore(){
         scoreLabel.text = "\(score) M"
         scoreLabel.fontColor = SKColor.black
         scoreLabel.horizontalAlignmentMode = .right
@@ -162,7 +215,8 @@ class GameScene: SKScene {
         scoreLabel.zPosition = 5
         addChild(scoreLabel)
     }
-   func makeBubble(){
+    
+   func createBubble(){
         let bubble1 = SKSpriteNode(imageNamed: "Bubble")
         bubble1.name = "Bubble1"
         bubble1.size=CGSize(width: 25, height: 25)
@@ -213,7 +267,7 @@ class GameScene: SKScene {
             }
         }))
     }
-       func makeHealth(){
+       func createHealth(){
             let health1 = SKSpriteNode(imageNamed: "Health")
             health1.name = "Health1"
             health1.size=CGSize(width: 25, height: 25)
@@ -278,21 +332,25 @@ class GameScene: SKScene {
         charPosition = -1
     }
 }
-extension GameScene: SKPhysicsContactDelegate {
-    
-    // MARK: - 3. set up physics body from GameScene.sks
-    // (click each object and look at the right-side inspector for the
-    // physics body details, then write code here to detect object collision)
-    func didBegin(_ contact: SKPhysicsContact) {
 
-        // OR bitwise helps see which two nodes hit each other, and what their categories are...
+extension GameScene: SKPhysicsContactDelegate {
+    func didBegin(_ contact: SKPhysicsContact) {
         let contactMask = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
-            
-        // MARK: 4. for the homework (check the first lines above)
-        // if meteor hits the dino
         if contactMask == PhysicalBodyCategory.coral | PhysicalBodyCategory.char {
             health -= 1
         }
+        if contactMask == PhysicalBodyCategory.coin | PhysicalBodyCategory.char {
+            coinView += 1
+            
+            self.enumerateChildNodes(withName: "Coin", using: ({
+                (node, error) in
+                let wait = SKAction.wait(forDuration: 2)
+                let hide = SKAction.run {node.isHidden = true}
+                let unhide = SKAction.run {node.isHidden = false}
+                let sequence = SKAction.sequence([hide,wait,unhide])
+                node.run(sequence)
+                }
+            ))
+        }
     }
-    
 }
