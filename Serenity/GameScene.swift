@@ -16,51 +16,51 @@ struct PhysicalBodyCategory{
 }
 
 class GameScene: SKScene {
-     var ground = SKSpriteNode()
-     var awan = SKSpriteNode()
-     var coral = SKSpriteNode()
-     var coral2 = SKSpriteNode()
-     var scoreLabel = SKLabelNode()
-     var char = SKSpriteNode()
+    var ground = SKSpriteNode()
+    var awan = SKSpriteNode()
+    var coral = SKSpriteNode()
+    var coral2 = SKSpriteNode()
+    var char = SKSpriteNode()
     var coin = SKSpriteNode()
-    let randCCoor = CGFloat.random(in: 300...750)
+    var scoreLabel = SKLabelNode()
+    var coinViewLabel = SKLabelNode()
+    var breath = 0
+    var health = 0
+    var breathTimer = 0
     var score = 0 {
         didSet{
             scoreLabel.text = "\(score) M"
         }
     }
-    
-    var charPosition: CGFloat = 0
-    var breath = 0
-    var health = 0
-    var breathTimer = 0
-    var coinViewLabel = SKLabelNode()
     var coinView = 0 {
         didSet{
             coinViewLabel.text = "\(coinView)"
         }
     }
+    let randCCoor = CGFloat.random(in: 300...750)
+    var charPosition: CGFloat = 0
     
     override func didMove(to view: SKView) {
         self.physicsWorld.contactDelegate = self
         self.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         breath = 5400
         health = 3
-        createChar()
         createBackground()
+        createChar()
         createCoral()
+        createCoin()
+        
         createScore()
         createCoinView()
         createBubble()
         createHealth()
-        createCoin()
         
     }
     
     override func update(_ currentTime: CFTimeInterval){
+        score += 1
         moveBackground()
         moveChar()
-        score += 1
         updateBubble()
         updateHealth()
         
@@ -91,6 +91,13 @@ class GameScene: SKScene {
             coral2.yScale = 0.7
             self.addChild(coral2)
         }
+        let ikan = SKSpriteNode(imageNamed: "Ikan")
+        ikan.name = "Ikan"
+        ikan.size=CGSize(width: 150, height: 150)
+        ikan.anchorPoint = CGPoint(x: -1.5, y: 0.5)
+        ikan.position = CGPoint(x: 0, y: 0)
+        ikan.zPosition = 4
+        self.addChild(ikan)
     }
     
     func createCoral(){
@@ -176,6 +183,14 @@ class GameScene: SKScene {
             if node.position.x < -(175) {
                 node.position.x += 175 * 3
                 node.position.y = CGFloat.random(in: -250...160)
+            }
+        }))
+        self.enumerateChildNodes(withName: "Ikan", using: ({
+            (node, error) in
+            node.position.x -= 2
+            if node.position.x < -(1000) {
+                node.position.x += 1000 * 3
+                node.position.y = CGFloat.random(in: -200...100)
             }
         }))
     }
