@@ -6,6 +6,7 @@
 //  Copyright © 2020 Pires Cerullo. All rights reserved.
 //
 
+import Foundation
 import SpriteKit
 import GameplayKit
 
@@ -39,14 +40,18 @@ class GameScene: SKScene {
     }
     let randCCoor = CGFloat.random(in: 300...750)
     var charPosition: CGFloat = 0
+    var deadAction: SKAction!
+    var SwimAction: SKAction!
     
-    override func didMove(to view: SKView) {
+    override func sceneDidLoad() {
         self.physicsWorld.contactDelegate = self
         self.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         breath = 5400
         health = 3
         createBackground()
         createChar()
+        setupSwimAction()
+        char.run(SwimAction,withKey: "SwimAnimation")
         createCoral()
         createCoin()
         
@@ -63,8 +68,8 @@ class GameScene: SKScene {
         moveChar()
         updateBubble()
         updateHealth()
-        
     }
+    
     func createBackground(){
         for i in 0...3{
             let ground = SKSpriteNode(imageNamed: "Ground")
@@ -93,7 +98,7 @@ class GameScene: SKScene {
         }
         let ikan = SKSpriteNode(imageNamed: "Ikan")
         ikan.name = "Ikan"
-        ikan.size=CGSize(width: 150, height: 150)
+        ikan.size=CGSize(width: 120, height: 120)
         ikan.anchorPoint = CGPoint(x: -1.5, y: 0.5)
         ikan.position = CGPoint(x: 0, y: 0)
         ikan.zPosition = 4
@@ -206,6 +211,35 @@ class GameScene: SKScene {
         physicsBody.collisionBitMask = 0
         char.physicsBody = physicsBody
         char.physicsBody?.affectedByGravity = false
+    }
+    
+
+    
+    func setupDyingAction() {
+        var textures = [SKTexture]()
+        for i in 1...8 {
+            textures.append(SKTexture(imageNamed: "Drowned\(i)"))
+        }
+        char.run(SKAction.animate(with: textures, timePerFrame: 0.2))
+        let scene = SKScene(fileNamed: "GameOver")
+        scene!.scaleMode = scaleMode
+        
+        let transition = SKTransition.fade(with: .white, duration: 3)
+        
+        let gameOverAction = SKAction.run {
+            self.view?.presentScene(scene!, transition: transition)
+        }
+        
+        let totalscore = score + (coinView * 600)
+        UserDefaults.standard.set(totalscore, forKey: "score")
+        run(SKAction.sequence([SKAction.wait(forDuration: 1), gameOverAction]))
+    }
+    func setupSwimAction() {
+        var textures = [SKTexture]()
+        for i in 1...6 {
+            textures.append(SKTexture(imageNamed: "Swim\(i)"))
+        }
+        SwimAction = SKAction.repeatForever(SKAction.animate(with: textures, timePerFrame: 0.2))
     }
     
     func moveChar(){
@@ -353,13 +387,29 @@ extension GameScene: SKPhysicsContactDelegate {
         let contactMask = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
         if contactMask == PhysicalBodyCategory.coral | PhysicalBodyCategory.char {
             health -= 1
+            
+            self.enumerateChildNodes(withName: "Char", using: ({
+                (node, error) in
+                let wait = SKAction.wait(forDuration: 0.1)
+                let hide = SKAction.run {node.isHidden = true}
+                let unhide = SKAction.run {node.isHidden = false}
+                let sequence = SKAction.sequence([hide,wait,unhide,wait,hide,wait,unhide,wait,hide,wait,unhide,wait,hide,wait,unhide,wait,hide,wait,unhide,wait,hide,wait,unhide,wait])
+                if self.health > 0 {
+                    node.run(sequence)
+                }
+            }
+            ))
+            if(health == 0){
+                setupDyingAction()
+            }
         }
+        
         if contactMask == PhysicalBodyCategory.coin | PhysicalBodyCategory.char {
             coinView += 1
             
             self.enumerateChildNodes(withName: "Coin", using: ({
                 (node, error) in
-                let wait = SKAction.wait(forDuration: 2)
+                let wait = SKAction.wait(forDuration: 2.5)
                 let hide = SKAction.run {node.isHidden = true}
                 let unhide = SKAction.run {node.isHidden = false}
                 let sequence = SKAction.sequence([hide,wait,unhide])

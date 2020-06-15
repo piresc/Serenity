@@ -16,7 +16,7 @@ class MainMenu: SKScene{
     var coral2 = SKSpriteNode()
     var coin = SKSpriteNode()
     let randCCoor = CGFloat.random(in: 300...750)
-    override func didMove(to view: SKView) {
+    override func sceneDidLoad() {
         self.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         createBackground()
     }
@@ -30,7 +30,7 @@ class MainMenu: SKScene{
         if startNode.frame.contains(touch.location(in: self)){
             if let scene = SKScene(fileNamed: "GameScene"){
                 scene.scaleMode = scaleMode
-                view?.presentScene(scene, transition: SKTransition.fade(withDuration: 0.5))
+                view?.presentScene(scene, transition: SKTransition.fade(withDuration: 1))
             }
         }
     }
@@ -43,13 +43,6 @@ class MainMenu: SKScene{
             ground.position = CGPoint(x:CGFloat(i) * ground.size.width, y: -(self.frame.size.height/2))
             ground.zPosition = -5
             self.addChild(ground)
-            
-            let awan = SKSpriteNode(imageNamed: "Awan")
-            awan.name = "Awan"
-            awan.size=CGSize(width: 750, height: 500)
-            awan.anchorPoint = CGPoint(x: 0.5, y: -0.5)
-            awan.position = CGPoint(x:CGFloat(i) * awan.size.width, y: -(self.frame.size.height/2))
-            self.addChild(awan)
             
             let coral = SKSpriteNode(imageNamed: "Coral")
             coral.name = "Coral"
@@ -84,13 +77,6 @@ class MainMenu: SKScene{
             node.position.x -= 2
             if node.position.x < -(3000) {
                 node.position.x += 3000 * 3
-            }
-        }))
-        self.enumerateChildNodes(withName: "Awan", using: ({
-            (node, error) in
-            node.position.x -= 2
-            if node.position.x < -(750) {
-                node.position.x += 750 * 3
             }
         }))
         self.enumerateChildNodes(withName: "Coral", using: ({
