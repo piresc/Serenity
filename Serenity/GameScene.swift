@@ -25,8 +25,11 @@ class GameScene: SKScene {
     var coin = SKSpriteNode()
     var scoreLabel = SKLabelNode()
     var coinViewLabel = SKLabelNode()
+    var touchtimeCoin = -150
+    var touchtimeCoral = -150
     var breath = 0
     var health = 0
+    var test = 0
     var breathTimer = 0
     var score = 0 {
         didSet{
@@ -40,17 +43,24 @@ class GameScene: SKScene {
     }
     let randCCoor = CGFloat.random(in: 300...750)
     var charPosition: CGFloat = 0
-    var deadAction: SKAction!
     var SwimAction: SKAction!
+    var DrownAction: SKAction!
     
     override func sceneDidLoad() {
         self.physicsWorld.contactDelegate = self
         self.anchorPoint = CGPoint(x: 0.5, y: 0.5)
-        breath = 5400
+        let BgmNode = SKAudioNode(fileNamed: "Bgm.mp3")
+        BgmNode.autoplayLooped = true
+        let volumeAction = SKAction.changeVolume(to: 2, duration: 0)
+        BgmNode.run(SKAction.group([volumeAction, SKAction.play()]) )
+        self.addChild(BgmNode)
+        
+        breath = 1800
         health = 3
         createBackground()
         createChar()
         setupSwimAction()
+        setupDrownAction()
         char.run(SwimAction,withKey: "SwimAnimation")
         createCoral()
         createCoin()
@@ -68,8 +78,72 @@ class GameScene: SKScene {
         moveChar()
         updateBubble()
         updateHealth()
+        if touchtimeCoin + 60 == score{
+            CoinSoundNode.removeFromParent()
+        }
+        if touchtimeCoral + 60 == score{
+            CoralSoundNode.removeFromParent()
+        }
+        if health == 0{
+            test -= 1
+        }
+        if test == -5{
+            char.removeAction(forKey: "SwimAnimation")
+            char.run(DrownAction,withKey: "DrownAnimation")
+            setupDyingAction()
+        }
+    }
+
+    func createChar(){
+        char = (childNode(withName: "Char")as! SKSpriteNode)
+        char.name = "Char"
+        char .zPosition = 5
+        charPosition = -1
+        let physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 180, height: 100))
+        physicsBody.categoryBitMask = PhysicalBodyCategory.char
+        physicsBody.contactTestBitMask = PhysicalBodyCategory.coral
+        physicsBody.collisionBitMask = 0
+        char.physicsBody = physicsBody
+        char.physicsBody?.affectedByGravity = false
     }
     
+    func setupSwimAction() {
+        var textures = [SKTexture]()
+        for i in 1...6 {
+            textures.append(SKTexture(imageNamed: "Swim\(i)"))
+        }
+        SwimAction = SKAction.repeatForever(SKAction.animate(with: textures, timePerFrame: 0.2))
+    }
+    
+    func setupDrownAction() {
+        var textures = [SKTexture]()
+        for i in 1...6 {
+            textures.append(SKTexture(imageNamed: "Drowned\(i)"))
+        }
+        DrownAction = SKAction.animate(with: textures, timePerFrame: 0.2)
+    }
+    
+    func setupDyingAction() {
+        let DeadSoundNode = SKAudioNode(fileNamed: "Dead.mp3")
+        DeadSoundNode.autoplayLooped = false
+        self.addChild(DeadSoundNode)
+
+        let volumeAction = SKAction.changeVolume(to: 1, duration: 0)
+        DeadSoundNode.run(SKAction.group([volumeAction, SKAction.play()]) )
+        let totalscore = score + (coinView * 600)
+        UserDefaults.standard.set(totalscore, forKey: "score")
+        
+        let scene = SKScene(fileNamed: "GameOver")
+        scene!.scaleMode = scaleMode
+        
+        
+        let transition = SKTransition.fade(with: .white, duration: 1)
+        
+        let gameOverAction = SKAction.run {
+            self.view?.presentScene(scene!, transition: transition)
+        }
+        run(SKAction.sequence([SKAction.wait(forDuration: 4), gameOverAction]))
+    }
     func createBackground(){
         for i in 0...3{
             let ground = SKSpriteNode(imageNamed: "Ground")
@@ -106,19 +180,19 @@ class GameScene: SKScene {
     }
     
     func createCoral(){
-            let coral = SKSpriteNode(imageNamed: "Coral")
-            coral.name = "Coral"
-            coral.size = CGSize(width: 150, height: 150)
-            coral.anchorPoint = CGPoint(x: 0.5, y: -0.1)
-            coral.position = CGPoint(x:randCCoor, y: -(self.frame.size.height/2))
-            coral .zPosition = 5
-            let physicsBody = SKPhysicsBody(rectangleOf: coral.size)
-            physicsBody.categoryBitMask = PhysicalBodyCategory.coral
-            physicsBody.contactTestBitMask = PhysicalBodyCategory.char
-            coral.physicsBody = physicsBody
-            coral.physicsBody?.isDynamic = false
-            coral.physicsBody?.affectedByGravity = false
-            self.addChild(coral)
+        let coral = SKSpriteNode(imageNamed: "Coral")
+        coral.name = "Coral"
+        coral.size = CGSize(width: 150, height: 150)
+        coral.anchorPoint = CGPoint(x: 0.5, y: -0.1)
+        coral.position = CGPoint(x:randCCoor, y: -(self.frame.size.height/2))
+        coral .zPosition = 5
+        let physicsBody = SKPhysicsBody(rectangleOf: coral.size)
+        physicsBody.categoryBitMask = PhysicalBodyCategory.coral
+        physicsBody.contactTestBitMask = PhysicalBodyCategory.char
+        coral.physicsBody = physicsBody
+        coral.physicsBody?.isDynamic = false
+        coral.physicsBody?.affectedByGravity = false
+        self.addChild(coral)
     }
     
     func createCoin(){
@@ -128,7 +202,7 @@ class GameScene: SKScene {
             coin.anchorPoint = CGPoint(x: 0.5, y: 0.5)
             coin.position = CGPoint(x:randCCoor, y: CGFloat.random(in: -250...160))
             coin.zPosition = 5
-            let physicsBody = SKPhysicsBody(circleOfRadius: coin.size.width)
+            let physicsBody = SKPhysicsBody(circleOfRadius: coin.size.width/2)
             physicsBody.categoryBitMask = PhysicalBodyCategory.coin
             physicsBody.contactTestBitMask = PhysicalBodyCategory.char
             coin.physicsBody = physicsBody
@@ -200,60 +274,16 @@ class GameScene: SKScene {
         }))
     }
 
-    func createChar(){
-        char = (childNode(withName: "Char")as! SKSpriteNode)
-        char.name = "Char"
-        char .zPosition = 5
-        charPosition = -1
-        let physicsBody = SKPhysicsBody(rectangleOf: char.size)
-        physicsBody.categoryBitMask = PhysicalBodyCategory.char
-        physicsBody.contactTestBitMask = PhysicalBodyCategory.coral
-        physicsBody.collisionBitMask = 0
-        char.physicsBody = physicsBody
-        char.physicsBody?.affectedByGravity = false
-    }
-    
-
-    
-    func setupDyingAction() {
-        var textures = [SKTexture]()
-        for i in 1...8 {
-            textures.append(SKTexture(imageNamed: "Drowned\(i)"))
-        }
-        char.run(SKAction.animate(with: textures, timePerFrame: 0.2))
-        let scene = SKScene(fileNamed: "GameOver")
-        scene!.scaleMode = scaleMode
-        
-        let transition = SKTransition.fade(with: .white, duration: 3)
-        
-        let gameOverAction = SKAction.run {
-            self.view?.presentScene(scene!, transition: transition)
-        }
-        
-        let totalscore = score + (coinView * 600)
-        UserDefaults.standard.set(totalscore, forKey: "score")
-        run(SKAction.sequence([SKAction.wait(forDuration: 1), gameOverAction]))
-    }
-    func setupSwimAction() {
-        var textures = [SKTexture]()
-        for i in 1...6 {
-            textures.append(SKTexture(imageNamed: "Swim\(i)"))
-        }
-        SwimAction = SKAction.repeatForever(SKAction.animate(with: textures, timePerFrame: 0.2))
-    }
-    
     func moveChar(){
         if char.position.y < -300{
             char.position.y = -300
         }
         if char.position.y>160{
             char.position.y = 160
-            breath = 5400
+            breath = 1800
         }
         char.position.y = char.position.y + (charPosition*3)
-        if breath > 0{
             breath -= 1
-        }
     }
 
     func createScore(){
@@ -292,29 +322,50 @@ class GameScene: SKScene {
         self.enumerateChildNodes(withName: "Bubble1", using: ({
             (node, error) in
             node.isHidden = true
-            if self.breath > 3600 && self.breath < 5400  {
+            if self.breath > 1200 && self.breath < 1800  {
                 node.isHidden = false
+            }
+            if self.breath == 1200{
+                self.BubbleSound()
+            }
+            if self.breath == 1100 || self.breath == 1800{
+                self.BubbleSoundNode.removeFromParent()
             }
         }))
         
         self.enumerateChildNodes(withName: "Bubble2", using: ({
             (node, error) in
             node.isHidden = true
-            if self.breath > 1800 && self.breath < 5400  {
+            if self.breath > 600 && self.breath < 1800  {
                 node.isHidden = false
+            }
+            if self.breath == 600{
+                self.BubbleSound()
+            }
+            if self.breath == 500 || self.breath == 1800{
+                self.BubbleSoundNode.removeFromParent()
             }
         }))
         
         self.enumerateChildNodes(withName: "Bubble3", using: ({
             (node, error) in
             node.isHidden = true
-           if self.breath > 0 && self.breath < 5400  {
+           if self.breath > 0 && self.breath < 1800  {
                 node.isHidden = false
             }
             if self.breath == 0{
-                self.breathTimer += 1;
+                self.BubbleSound()
+            }
+            if self.breath == -100 || self.breath == 1800{
+                self.BubbleSoundNode.removeFromParent()
             }
         }))
+        if breath < 0{
+            breathTimer += 1
+        }
+        if breath == 1800{
+            breathTimer = 0
+        }
     }
        func createHealth(){
             let health1 = SKSpriteNode(imageNamed: "Health")
@@ -363,22 +414,62 @@ class GameScene: SKScene {
                 node.isHidden = false
             }
         }))
-        if self.breathTimer > 1{
+        if breathTimer == 600{
             health -= 1
         }
-        if self.breathTimer > 1800{
+        if breathTimer == 1200{
             health -= 1
         }
-        if self.breathTimer > 3600{
+        if breathTimer == 1800{
             health -= 1
         }
     }
+
+    
+//Sound
+    let SwimSoundNode = SKAudioNode(fileNamed: "Diving.mp3")
+    func SwimSound() {
+        SwimSoundNode.autoplayLooped = false
+        self.addChild(SwimSoundNode)
+
+        let volumeAction = SKAction.changeVolume(to: 2, duration: 0)
+        SwimSoundNode.run(SKAction.group([volumeAction, SKAction.play()]) )
+    }
+
+    let CoralSoundNode = SKAudioNode(fileNamed: "Coral.mp3")
+    func CoralSound(){
+        CoralSoundNode.autoplayLooped = false
+        self.addChild(CoralSoundNode)
+
+        let volumeAction = SKAction.changeVolume(to: 0.4, duration: 0)
+        CoralSoundNode.run(SKAction.group([volumeAction, SKAction.play()]) )
+    }
+    let CoinSoundNode = SKAudioNode(fileNamed: "Coin.mp3")
+    func CoinSound(){
+        CoinSoundNode.autoplayLooped = false
+        self.addChild(CoinSoundNode)
+
+        let volumeAction = SKAction.changeVolume(to: 0.2, duration: 0)
+        CoinSoundNode.run(SKAction.group([volumeAction, SKAction.play()]) )
+    }
+    let BubbleSoundNode = SKAudioNode(fileNamed: "LostBubbles.mp3")
+    func BubbleSound(){
+        BubbleSoundNode.autoplayLooped = false
+        self.addChild(BubbleSoundNode)
+        let volumeAction = SKAction.changeVolume(to: 0.2, duration: 0)
+        BubbleSoundNode.run(SKAction.group([volumeAction, SKAction.play()]) )
+    }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if health > 0 {
         charPosition = 1
+        SwimSound()
+        }
 }
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         charPosition = -1
+        SwimSoundNode.removeFromParent()
+        
     }
 }
 
@@ -386,36 +477,44 @@ extension GameScene: SKPhysicsContactDelegate {
     func didBegin(_ contact: SKPhysicsContact) {
         let contactMask = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
         if contactMask == PhysicalBodyCategory.coral | PhysicalBodyCategory.char {
-            health -= 1
-            
-            self.enumerateChildNodes(withName: "Char", using: ({
-                (node, error) in
-                let wait = SKAction.wait(forDuration: 0.1)
-                let hide = SKAction.run {node.isHidden = true}
-                let unhide = SKAction.run {node.isHidden = false}
-                let sequence = SKAction.sequence([hide,wait,unhide,wait,hide,wait,unhide,wait,hide,wait,unhide,wait,hide,wait,unhide,wait,hide,wait,unhide,wait,hide,wait,unhide,wait])
-                if self.health > 0 {
+            if score - 150 > touchtimeCoral {
+                health -= 1
+                CoralSound()
+                self.enumerateChildNodes(withName: "Char", using: ({
+                    (node, error) in
+                    let wait = SKAction.wait(forDuration: 0.1)
+                    let hide = SKAction.run {node.isHidden = true}
+                    let unhide = SKAction.run {node.isHidden = false}
+                    let sequence = SKAction.sequence([hide,wait,unhide,wait,hide,wait,unhide,wait,hide,wait,unhide,wait,hide,wait,unhide,wait,hide,wait,unhide,wait,hide,wait,unhide,wait])
+                    if self.health > 0 {
                     node.run(sequence)
+                        }
+                    }
+                ))
+                if(health == 0){
+                    setupDyingAction()
                 }
-            }
-            ))
-            if(health == 0){
-                setupDyingAction()
+                touchtimeCoral = score
             }
         }
         
         if contactMask == PhysicalBodyCategory.coin | PhysicalBodyCategory.char {
-            coinView += 1
-            
-            self.enumerateChildNodes(withName: "Coin", using: ({
-                (node, error) in
-                let wait = SKAction.wait(forDuration: 2.5)
-                let hide = SKAction.run {node.isHidden = true}
-                let unhide = SKAction.run {node.isHidden = false}
-                let sequence = SKAction.sequence([hide,wait,unhide])
-                node.run(sequence)
+            if score - 150 > touchtimeCoin {
+                if health > 0 {
+                coinView += 1
+                CoinSound()
+                self.enumerateChildNodes(withName: "Coin", using: ({
+                    (node, error) in
+                    let wait = SKAction.wait(forDuration: 2.5)
+                    let hide = SKAction.run {node.isHidden = true}
+                    let unhide = SKAction.run {node.isHidden = false}
+                    let sequence = SKAction.sequence([hide,wait,unhide])
+                    node.run(sequence)
+                    }
+                ))
+                touchtimeCoin = score
                 }
-            ))
+            }
         }
     }
 }

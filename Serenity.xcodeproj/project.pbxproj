@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BA2E5634249850B400E13383 /* Bgm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BA2E5630249850B300E13383 /* Bgm.mp3 */; };
+		BA2E5636249850B400E13383 /* Swim.m4a in Resources */ = {isa = PBXBuildFile; fileRef = BA2E5632249850B300E13383 /* Swim.m4a */; };
+		BA2E563A2498653700E13383 /* Diving.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BA2E56392498653600E13383 /* Diving.mp3 */; };
+		BA2E563C2498686100E13383 /* Btn.wav in Resources */ = {isa = PBXBuildFile; fileRef = BA2E563B2498686100E13383 /* Btn.wav */; };
+		BA2E564024989A1800E13383 /* BgmMenu.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BA2E563F24989A1800E13383 /* BgmMenu.mp3 */; };
+		BA2E564224989B0A00E13383 /* LostBubbles.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BA2E564124989B0A00E13383 /* LostBubbles.mp3 */; };
+		BA2E56442498A20200E13383 /* Coin.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BA2E56432498A20100E13383 /* Coin.mp3 */; };
+		BA2E56462498A3ED00E13383 /* Coral.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BA2E56452498A3ED00E13383 /* Coral.mp3 */; };
+		BA2E56482498B26300E13383 /* Dead.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BA2E56472498B26300E13383 /* Dead.mp3 */; };
 		BA377666248FF64E00DDF2B5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA377665248FF64E00DDF2B5 /* AppDelegate.swift */; };
 		BA377668248FF64E00DDF2B5 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = BA377667248FF64E00DDF2B5 /* GameScene.sks */; };
 		BA37766A248FF64E00DDF2B5 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = BA377669248FF64E00DDF2B5 /* Actions.sks */; };
@@ -22,6 +31,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		BA2E5630249850B300E13383 /* Bgm.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Bgm.mp3; sourceTree = "<group>"; };
+		BA2E5632249850B300E13383 /* Swim.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = Swim.m4a; sourceTree = "<group>"; };
+		BA2E56392498653600E13383 /* Diving.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Diving.mp3; sourceTree = "<group>"; };
+		BA2E563B2498686100E13383 /* Btn.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Btn.wav; sourceTree = "<group>"; };
+		BA2E563F24989A1800E13383 /* BgmMenu.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = BgmMenu.mp3; sourceTree = "<group>"; };
+		BA2E564124989B0A00E13383 /* LostBubbles.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = LostBubbles.mp3; sourceTree = "<group>"; };
+		BA2E56432498A20100E13383 /* Coin.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Coin.mp3; sourceTree = "<group>"; };
+		BA2E56452498A3ED00E13383 /* Coral.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Coral.mp3; sourceTree = "<group>"; };
+		BA2E56472498B26300E13383 /* Dead.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Dead.mp3; sourceTree = "<group>"; };
 		BA377662248FF64E00DDF2B5 /* Serenity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Serenity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA377665248FF64E00DDF2B5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BA377667248FF64E00DDF2B5 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -49,6 +67,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BA2E562E249850B300E13383 /* SoundEffects */ = {
+			isa = PBXGroup;
+			children = (
+				BA2E56472498B26300E13383 /* Dead.mp3 */,
+				BA2E56392498653600E13383 /* Diving.mp3 */,
+				BA2E56432498A20100E13383 /* Coin.mp3 */,
+				BA2E56452498A3ED00E13383 /* Coral.mp3 */,
+				BA2E564124989B0A00E13383 /* LostBubbles.mp3 */,
+				BA2E5632249850B300E13383 /* Swim.m4a */,
+				BA2E5630249850B300E13383 /* Bgm.mp3 */,
+				BA2E563F24989A1800E13383 /* BgmMenu.mp3 */,
+				BA2E563B2498686100E13383 /* Btn.wav */,
+			);
+			path = SoundEffects;
+			sourceTree = "<group>";
+		};
 		BA377659248FF64E00DDF2B5 = {
 			isa = PBXGroup;
 			children = (
@@ -68,6 +102,7 @@
 		BA377664248FF64E00DDF2B5 /* Serenity */ = {
 			isa = PBXGroup;
 			children = (
+				BA2E562E249850B300E13383 /* SoundEffects */,
 				BA377665248FF64E00DDF2B5 /* AppDelegate.swift */,
 				BA377667248FF64E00DDF2B5 /* GameScene.sks */,
 				BAD0300C2496CA6C00ECD8B6 /* MainMenu.sks */,
@@ -143,12 +178,21 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BA2E564224989B0A00E13383 /* LostBubbles.mp3 in Resources */,
+				BA2E56462498A3ED00E13383 /* Coral.mp3 in Resources */,
+				BA2E564024989A1800E13383 /* BgmMenu.mp3 in Resources */,
 				BA377671248FF64E00DDF2B5 /* Main.storyboard in Resources */,
+				BA2E56482498B26300E13383 /* Dead.mp3 in Resources */,
+				BA2E563C2498686100E13383 /* Btn.wav in Resources */,
+				BA2E563A2498653700E13383 /* Diving.mp3 in Resources */,
 				BAD0301324975C5300ECD8B6 /* GameOver.sks in Resources */,
 				BAD0300D2496CA6C00ECD8B6 /* MainMenu.sks in Resources */,
 				BA377668248FF64E00DDF2B5 /* GameScene.sks in Resources */,
 				BA377673248FF65000DDF2B5 /* Assets.xcassets in Resources */,
+				BA2E5634249850B400E13383 /* Bgm.mp3 in Resources */,
 				BA377676248FF65000DDF2B5 /* LaunchScreen.storyboard in Resources */,
+				BA2E56442498A20200E13383 /* Coin.mp3 in Resources */,
+				BA2E5636249850B400E13383 /* Swim.m4a in Resources */,
 				BA37766A248FF64E00DDF2B5 /* Actions.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

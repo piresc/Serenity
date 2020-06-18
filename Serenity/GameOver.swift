@@ -29,16 +29,43 @@ class GameOver: SKScene{
         let homeNode = childNode(withName: "Quit") as! SKSpriteNode
         
         if startNode.frame.contains(touch.location(in: self)){
-            if let scene = SKScene(fileNamed: "GameScene"){
-                scene.scaleMode = scaleMode
-                view?.presentScene(scene, transition: SKTransition.fade(withDuration: 1))
-            }
+                let BtnSoundNode = SKAudioNode(fileNamed: "Btn.wav")
+                BtnSoundNode.autoplayLooped = false
+                self.addChild(BtnSoundNode)
+
+                let volumeAction = SKAction.changeVolume(to: 1, duration: 1)
+                BtnSoundNode.run(SKAction.group([volumeAction, SKAction.play()]) )
+                
+                
+                let scene = SKScene(fileNamed: "GameScene")
+                scene!.scaleMode = scaleMode
+                
+                let transition = SKTransition.fade(with: .white, duration: 1)
+                
+                let GameStartAction = SKAction.run {
+                    self.view?.presentScene(scene!, transition: transition)
+                }
+            run(SKAction.sequence([SKAction.wait(forDuration: 0.7), GameStartAction]))
         }
+            
         else if homeNode.frame.contains(touch.location(in: self)){
-            if let scene = SKScene(fileNamed: "MainMenu"){
-                scene.scaleMode = scaleMode
-                view?.presentScene(scene, transition: SKTransition.fade(withDuration: 1))
-            }
+                let BtnSoundNode = SKAudioNode(fileNamed: "Btn.wav")
+                BtnSoundNode.autoplayLooped = false
+                self.addChild(BtnSoundNode)
+
+                let volumeAction = SKAction.changeVolume(to: 1, duration: 1)
+                BtnSoundNode.run(SKAction.group([volumeAction, SKAction.play()]) )
+                
+                
+                let scene = SKScene(fileNamed: "MainMenu")
+                scene!.scaleMode = scaleMode
+                
+                let transition = SKTransition.fade(with: .white, duration: 1)
+                
+                let GameStartAction = SKAction.run {
+                    self.view?.presentScene(scene!, transition: transition)
+                }
+            run(SKAction.sequence([SKAction.wait(forDuration: 0.7), GameStartAction]))
         }
     }
 }

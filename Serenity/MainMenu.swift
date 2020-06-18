@@ -16,9 +16,15 @@ class MainMenu: SKScene{
     var coral2 = SKSpriteNode()
     var coin = SKSpriteNode()
     let randCCoor = CGFloat.random(in: 300...750)
+    
     override func sceneDidLoad() {
         self.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         createBackground()
+        let BgmNode = SKAudioNode(fileNamed: "BgmMenu.mp3")
+        BgmNode.autoplayLooped = true
+        let volumeAction = SKAction.changeVolume(to: 0.5, duration: 0)
+        BgmNode.run(SKAction.group([volumeAction, SKAction.play()]) )
+        self.addChild(BgmNode)
     }
     override func update(_ currentTime: CFTimeInterval){
         moveBackground()
@@ -28,10 +34,25 @@ class MainMenu: SKScene{
             
         let startNode = childNode(withName: "Start") as! SKSpriteNode
         if startNode.frame.contains(touch.location(in: self)){
-            if let scene = SKScene(fileNamed: "GameScene"){
-                scene.scaleMode = scaleMode
-                view?.presentScene(scene, transition: SKTransition.fade(withDuration: 1))
+            let BtnSoundNode = SKAudioNode(fileNamed: "Btn.wav")
+            BtnSoundNode.autoplayLooped = false
+            self.addChild(BtnSoundNode)
+
+            let volumeAction = SKAction.changeVolume(to: 1, duration: 1)
+            BtnSoundNode.run(SKAction.group([volumeAction, SKAction.play()]) )
+            
+            
+            let scene = SKScene(fileNamed: "GameScene")
+            scene!.scaleMode = scaleMode
+            
+            let transition = SKTransition.fade(with: .white, duration: 1)
+            
+            let GameStartAction = SKAction.run {
+                self.view?.presentScene(scene!, transition: transition)
             }
+            
+            run(SKAction.sequence([SKAction.wait(forDuration: 0.7), GameStartAction]))
+
         }
     }
     func createBackground(){
