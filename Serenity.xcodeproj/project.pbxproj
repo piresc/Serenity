@@ -24,6 +24,11 @@
 		BA377671248FF64E00DDF2B5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BA37766F248FF64E00DDF2B5 /* Main.storyboard */; };
 		BA377673248FF65000DDF2B5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA377672248FF65000DDF2B5 /* Assets.xcassets */; };
 		BA377676248FF65000DDF2B5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BA377674248FF65000DDF2B5 /* LaunchScreen.storyboard */; };
+		BA5B6EA5267A67C0001E1FB4 /* newBGM.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BA5B6EA4267A67C0001E1FB4 /* newBGM.mp3 */; };
+		BA5B6EA7267A67CF001E1FB4 /* Power Down.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BA5B6EA6267A67CF001E1FB4 /* Power Down.mp3 */; };
+		BA5B6EA9267A6808001E1FB4 /* Dive.wav in Resources */ = {isa = PBXBuildFile; fileRef = BA5B6EA8267A6808001E1FB4 /* Dive.wav */; };
+		BA5B6EAB267A681D001E1FB4 /* Explosion.wav in Resources */ = {isa = PBXBuildFile; fileRef = BA5B6EAA267A681D001E1FB4 /* Explosion.wav */; };
+		BA5B6EAD267A686C001E1FB4 /* Flying.wav in Resources */ = {isa = PBXBuildFile; fileRef = BA5B6EAC267A686C001E1FB4 /* Flying.wav */; };
 		BAD0300D2496CA6C00ECD8B6 /* MainMenu.sks in Resources */ = {isa = PBXBuildFile; fileRef = BAD0300C2496CA6C00ECD8B6 /* MainMenu.sks */; };
 		BAD0300F2496CB8900ECD8B6 /* MainMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAD0300E2496CB8900ECD8B6 /* MainMenu.swift */; };
 		BAD030112496DBC600ECD8B6 /* GameOver.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAD030102496DBC600ECD8B6 /* GameOver.swift */; };
@@ -50,6 +55,11 @@
 		BA377672248FF65000DDF2B5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BA377675248FF65000DDF2B5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BA377677248FF65000DDF2B5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BA5B6EA4267A67C0001E1FB4 /* newBGM.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = newBGM.mp3; sourceTree = "<group>"; };
+		BA5B6EA6267A67CF001E1FB4 /* Power Down.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Power Down.mp3"; sourceTree = "<group>"; };
+		BA5B6EA8267A6808001E1FB4 /* Dive.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Dive.wav; sourceTree = "<group>"; };
+		BA5B6EAA267A681D001E1FB4 /* Explosion.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Explosion.wav; sourceTree = "<group>"; };
+		BA5B6EAC267A686C001E1FB4 /* Flying.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Flying.wav; sourceTree = "<group>"; };
 		BAD0300C2496CA6C00ECD8B6 /* MainMenu.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MainMenu.sks; sourceTree = "<group>"; };
 		BAD0300E2496CB8900ECD8B6 /* MainMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenu.swift; sourceTree = "<group>"; };
 		BAD030102496DBC600ECD8B6 /* GameOver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOver.swift; sourceTree = "<group>"; };
@@ -70,6 +80,11 @@
 		BA2E562E249850B300E13383 /* SoundEffects */ = {
 			isa = PBXGroup;
 			children = (
+				BA5B6EAC267A686C001E1FB4 /* Flying.wav */,
+				BA5B6EAA267A681D001E1FB4 /* Explosion.wav */,
+				BA5B6EA8267A6808001E1FB4 /* Dive.wav */,
+				BA5B6EA6267A67CF001E1FB4 /* Power Down.mp3 */,
+				BA5B6EA4267A67C0001E1FB4 /* newBGM.mp3 */,
 				BA2E56472498B26300E13383 /* Dead.mp3 */,
 				BA2E56392498653600E13383 /* Diving.mp3 */,
 				BA2E56432498A20100E13383 /* Coin.mp3 */,
@@ -179,16 +194,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				BA2E564224989B0A00E13383 /* LostBubbles.mp3 in Resources */,
+				BA5B6EA7267A67CF001E1FB4 /* Power Down.mp3 in Resources */,
 				BA2E56462498A3ED00E13383 /* Coral.mp3 in Resources */,
 				BA2E564024989A1800E13383 /* BgmMenu.mp3 in Resources */,
 				BA377671248FF64E00DDF2B5 /* Main.storyboard in Resources */,
+				BA5B6EAD267A686C001E1FB4 /* Flying.wav in Resources */,
+				BA5B6EA5267A67C0001E1FB4 /* newBGM.mp3 in Resources */,
 				BA2E56482498B26300E13383 /* Dead.mp3 in Resources */,
 				BA2E563C2498686100E13383 /* Btn.wav in Resources */,
+				BA5B6EA9267A6808001E1FB4 /* Dive.wav in Resources */,
 				BA2E563A2498653700E13383 /* Diving.mp3 in Resources */,
 				BAD0301324975C5300ECD8B6 /* GameOver.sks in Resources */,
 				BAD0300D2496CA6C00ECD8B6 /* MainMenu.sks in Resources */,
 				BA377668248FF64E00DDF2B5 /* GameScene.sks in Resources */,
 				BA377673248FF65000DDF2B5 /* Assets.xcassets in Resources */,
+				BA5B6EAB267A681D001E1FB4 /* Explosion.wav in Resources */,
 				BA2E5634249850B400E13383 /* Bgm.mp3 in Resources */,
 				BA377676248FF65000DDF2B5 /* LaunchScreen.storyboard in Resources */,
 				BA2E56442498A20200E13383 /* Coin.mp3 in Resources */,

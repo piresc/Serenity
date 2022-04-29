@@ -49,9 +49,9 @@ class GameScene: SKScene {
     override func sceneDidLoad() {
         self.physicsWorld.contactDelegate = self
         self.anchorPoint = CGPoint(x: 0.5, y: 0.5)
-        let BgmNode = SKAudioNode(fileNamed: "Bgm.mp3")
+        let BgmNode = SKAudioNode(fileNamed: "newBGM.mp3")
         BgmNode.autoplayLooped = true
-        let volumeAction = SKAction.changeVolume(to: 2, duration: 0)
+        let volumeAction = SKAction.changeVolume(to: 1, duration: 0)
         BgmNode.run(SKAction.group([volumeAction, SKAction.play()]) )
         self.addChild(BgmNode)
         
@@ -99,7 +99,7 @@ class GameScene: SKScene {
         char.name = "Char"
         char .zPosition = 5
         charPosition = -1
-        let physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 180, height: 100))
+        let physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 100, height: 100))
         physicsBody.categoryBitMask = PhysicalBodyCategory.char
         physicsBody.contactTestBitMask = PhysicalBodyCategory.coral
         physicsBody.collisionBitMask = 0
@@ -124,11 +124,11 @@ class GameScene: SKScene {
     }
     
     func setupDyingAction() {
-        let DeadSoundNode = SKAudioNode(fileNamed: "Dead.mp3")
+        let DeadSoundNode = SKAudioNode(fileNamed: "Explosion.wav")
         DeadSoundNode.autoplayLooped = false
         self.addChild(DeadSoundNode)
 
-        let volumeAction = SKAction.changeVolume(to: 1, duration: 0)
+        let volumeAction = SKAction.changeVolume(to: 0.2, duration: 0)
         DeadSoundNode.run(SKAction.group([volumeAction, SKAction.play()]) )
         let totalscore = score + (coinView * 600)
         UserDefaults.standard.set(totalscore, forKey: "score")
@@ -153,17 +153,18 @@ class GameScene: SKScene {
             ground.position = CGPoint(x:CGFloat(i) * ground.size.width, y: -(self.frame.size.height/2))
             ground.zPosition = -5
             self.addChild(ground)
+            ground.alpha = 0
             
             let awan = SKSpriteNode(imageNamed: "Awan")
             awan.name = "Awan"
-            awan.size=CGSize(width: 750, height: 500)
+            awan.size=CGSize(width: 750, height: 350)
             awan.anchorPoint = CGPoint(x: 0.5, y: -0.5)
-            awan.position = CGPoint(x:CGFloat(i) * awan.size.width, y: -(self.frame.size.height/2))
+            awan.position = CGPoint(x:CGFloat(i) * awan.size.width, y: -250)
             self.addChild(awan)
             
             let coral2 = SKSpriteNode(imageNamed: "Coral2")
             coral2.name = "Coral2"
-            coral2.size = CGSize(width: 150, height: 150)
+            coral2.size = CGSize(width: 100, height: 100)
             coral2.anchorPoint = CGPoint(x: 0.5, y: 0)
             coral2.position = CGPoint(x:CGFloat(i) * (randCCoor+CGFloat.random(in: -150...150)), y: -(self.frame.size.height/2))
             coral2.xScale = 0.7
@@ -179,14 +180,28 @@ class GameScene: SKScene {
         self.addChild(ikan)
     }
     
+//    func createChar(){
+//        char = (childNode(withName: "Char")as! SKSpriteNode)
+//        char.name = "Char"
+//        char .zPosition = 5
+//        charPosition = -1
+//        let physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 180, height: 100))
+//        physicsBody.categoryBitMask = PhysicalBodyCategory.char
+//        physicsBody.contactTestBitMask = PhysicalBodyCategory.coral
+//        physicsBody.collisionBitMask = 0
+//        char.physicsBody = physicsBody
+//        char.physicsBody?.affectedByGravity = false
+//    }
+    
+    
     func createCoral(){
         let coral = SKSpriteNode(imageNamed: "Coral")
         coral.name = "Coral"
         coral.size = CGSize(width: 150, height: 150)
-        coral.anchorPoint = CGPoint(x: 0.5, y: -0.1)
-        coral.position = CGPoint(x:randCCoor, y: -(self.frame.size.height/2))
+//        coral.anchorPoint = CGPoint(x: 0.5, y: -0.1)
+        coral.position = CGPoint(x:randCCoor, y: CGFloat.random(in: -250...160))
         coral .zPosition = 5
-        let physicsBody = SKPhysicsBody(rectangleOf: coral.size)
+        let physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 100, height: 70))
         physicsBody.categoryBitMask = PhysicalBodyCategory.coral
         physicsBody.contactTestBitMask = PhysicalBodyCategory.char
         coral.physicsBody = physicsBody
@@ -213,7 +228,7 @@ class GameScene: SKScene {
     
     func createCoinView(){
         coinViewLabel.text = "\(coinView)"
-        coinViewLabel.fontColor = SKColor.black
+        coinViewLabel.fontColor = SKColor.white
         coinViewLabel.horizontalAlignmentMode = .right
         coinViewLabel.position = CGPoint(x: 120, y: 255)
         coinViewLabel.zPosition = 5
@@ -288,7 +303,7 @@ class GameScene: SKScene {
 
     func createScore(){
         scoreLabel.text = "\(score) M"
-        scoreLabel.fontColor = SKColor.black
+        scoreLabel.fontColor = SKColor.white
         scoreLabel.horizontalAlignmentMode = .right
         scoreLabel.position = CGPoint(x: 150, y: 285)
         scoreLabel.zPosition = 5
@@ -427,7 +442,7 @@ class GameScene: SKScene {
 
     
 //Sound
-    let SwimSoundNode = SKAudioNode(fileNamed: "Diving.mp3")
+    let SwimSoundNode = SKAudioNode(fileNamed: "Flying.wav")
     func SwimSound() {
         SwimSoundNode.autoplayLooped = false
         self.addChild(SwimSoundNode)
@@ -441,7 +456,7 @@ class GameScene: SKScene {
         CoralSoundNode.autoplayLooped = false
         self.addChild(CoralSoundNode)
 
-        let volumeAction = SKAction.changeVolume(to: 0.4, duration: 0)
+        let volumeAction = SKAction.changeVolume(to: 2, duration: 0)
         CoralSoundNode.run(SKAction.group([volumeAction, SKAction.play()]) )
     }
     let CoinSoundNode = SKAudioNode(fileNamed: "Coin.mp3")
@@ -452,11 +467,11 @@ class GameScene: SKScene {
         let volumeAction = SKAction.changeVolume(to: 0.2, duration: 0)
         CoinSoundNode.run(SKAction.group([volumeAction, SKAction.play()]) )
     }
-    let BubbleSoundNode = SKAudioNode(fileNamed: "LostBubbles.mp3")
+    let BubbleSoundNode = SKAudioNode(fileNamed: "Power Down.mp3")
     func BubbleSound(){
         BubbleSoundNode.autoplayLooped = false
         self.addChild(BubbleSoundNode)
-        let volumeAction = SKAction.changeVolume(to: 0.2, duration: 0)
+        let volumeAction = SKAction.changeVolume(to: 3, duration: 0)
         BubbleSoundNode.run(SKAction.group([volumeAction, SKAction.play()]) )
     }
     
@@ -489,6 +504,15 @@ extension GameScene: SKPhysicsContactDelegate {
                     if self.health > 0 {
                     node.run(sequence)
                         }
+                    }
+                ))
+                self.enumerateChildNodes(withName: "Coral", using: ({
+                    (node, error) in
+                    let wait = SKAction.wait(forDuration: 2.5)
+                    let hide = SKAction.run {node.isHidden = true}
+                    let unhide = SKAction.run {node.isHidden = false}
+                    let sequence = SKAction.sequence([hide,wait,unhide])
+                    node.run(sequence)
                     }
                 ))
                 if(health == 0){
